@@ -1,0 +1,51 @@
+= Changelog
+
+== Release 0.4.0
+    * FIXED: a bug on multiple actions
+    * FIXED: annoying warning messages
+    * CHANGED: Module method `server_info` now returns an Hash
+    * CHANGED: Module method `init` now throw an exception if the supplied name is empty or nil
+    * CHANGED: extconf.rb
+    * ADDED: `closed_reason` method
+    * ADDED: missing `closed` signal
+
+== Release 0.3.3
+    * FIXED: conflict with .so files
+    * CHANGED: library (.so) name from libnotify.so to rnotify.so
+    * CHANGED: Change module name from LibNotify to Notify
+    * CHANGED: extconf.rb
+
+== Release 0.3.2
+    * FIXED: a stupid coding error
+
+== Release 0.3.1
+    * ADDED: Gtk::StatusIcon support
+
+== Release 0.3.0
+    * FIXED: extconf.rb to install ruby-libnotify on debian-based systems
+    * CHANGED: LibNotify becomes a module
+    * CHANGED: the class methods of the old LibNotify class are now module functions
+    * CHANGED: the instance methods of the old LibNotify class now belongs to the Notification class
+    * CHANGED: instance method `set_geometry_hints` renamed, see doc
+    * CHANGED: instance method `icon=` renamed, see doc
+    * CHANGED: module method `get_app_name` renamed, see doc
+    * CHANGED: module method `get_server_caps` renamed, see doc
+    * CHANGED: module method `get_server_info` renamed, see doc
+    * CHANGED: alias removed
+    * CHANGED: examples updated
+    * CHANGED: libnotify version free
+    * ADDED: rdoc docs
+    * ADDED: README
+    * ADDED: INSTALL
+
+== Release 0.2.0
+    * Initial public release, require libnotify >= 0.4.1
+
+===================== Pre release =====================
+
+== Pre-Release 0.1.1
+    * FIXED: small bugs
+
+== Pre-Release 0.1.0
+    * let's write code
+

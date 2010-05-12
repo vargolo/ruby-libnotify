@@ -1,0 +1,7 @@
+pkgs/
+doc/
+TODO
+*.so
+*.[ao]
+*~
+
