@@ -18,6 +18,16 @@ ruby-libnotify is a ruby binding for libnotify (http://www.galago-project.org)
 
 Visit the page http://ruby-libnotify.rubyforge.org/
 
+== Bug Report
+
+Use this page http://github.com/vargolo/ruby-libnotify/issues
+
+OR
+
+send me an email (see AUTHORS.rdoc)
+
+*IMPORTANT* the subject of the email MUST contain 'ruby-libnotify' otherwise will be ignored
+
 == License
 
 ruby-libnotify is released under the terms of the LGPL license
