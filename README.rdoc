@@ -16,7 +16,7 @@ ruby-libnotify is a ruby binding for libnotify (http://www.galago-project.org)
 
 == API Documentation
 
-Visit the page http://ruby-libnotify.rubyforge.org/
+Visit the page http://ruby-libnotify.rubyforge.org
 
 == Bug Report
 
@@ -26,7 +26,7 @@ OR
 
 send me an email (see AUTHORS.rdoc)
 
-*IMPORTANT* the subject of the email MUST contain 'ruby-libnotify' otherwise will be ignored.
+*IMPORTANT*: the subject of the email MUST contain 'ruby-libnotify' otherwise will be ignored
 
 == License
 
