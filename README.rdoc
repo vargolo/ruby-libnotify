@@ -28,6 +28,10 @@ send me an email (see AUTHORS.rdoc)
 
 *IMPORTANT*: the subject of the email MUST contain 'ruby-libnotify' otherwise will be ignored
 
+== Thanks to
+
+* Jan Losinski (bugs report)
+
 == License
 
 ruby-libnotify is released under the terms of the LGPL license
