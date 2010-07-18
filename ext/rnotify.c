@@ -1,5 +1,5 @@
 //
-//            Rnotify.c
+//            rnotify.c
 //
 //  Luca Russo <vargolo@gmail.com>
 //  Copyright (LGPL) 2006 - 2010

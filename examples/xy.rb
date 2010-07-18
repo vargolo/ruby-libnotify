@@ -11,7 +11,12 @@ ruby-libnotify xy example
 
 =end
 
-require 'RNotify'
+begin
+  require 'RNotify'
+rescue LoadError
+  require 'rubygems'
+  require 'RNotify'
+end
 
 Notify.init("Test7")
 

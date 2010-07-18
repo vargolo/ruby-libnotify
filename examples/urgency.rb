@@ -11,7 +11,12 @@ ruby-libnotify urgency example
 
 =end
 
-require 'RNotify'
+begin
+  require 'RNotify'
+rescue LoadError
+  require 'rubygems'
+  require 'RNotify'
+end
 
 Notify.init("Test5")
 

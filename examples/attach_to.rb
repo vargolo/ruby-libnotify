@@ -11,7 +11,12 @@ ruby-libnotify attach_to example
 
 =end
 
-require 'RNotify'
+begin
+  require 'RNotify'
+rescue LoadError
+  require 'rubygems'
+  require 'RNotify'
+end
 
 Gtk.init
 Notify.init("Test9")

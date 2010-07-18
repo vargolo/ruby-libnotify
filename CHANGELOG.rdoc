@@ -1,5 +1,9 @@
 = Changelog
 
+== Release 0.4.1
+   * CHANGED: package's structure, now more standard
+   * ADDED: require 'rubygems' in examples
+
 == Release 0.4.0
     * FIXED: a bug on multiple actions
     * FIXED: annoying warning messages

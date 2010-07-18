@@ -4,4 +4,8 @@ TODO
 *.so
 *.[ao]
 *~
-
+*.gem*
+*.log
+.config
+InstalledFiles
+Makefile

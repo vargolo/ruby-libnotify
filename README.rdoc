@@ -10,9 +10,13 @@ ruby-libnotify is a ruby binding for libnotify (http://www.galago-project.org)
 
 == Install
 
-* ruby extconf.rb
-* make
-* make install (as root)
+* ruby setup.rb config
+* ruby setup.rb setup
+* ruby setup.rb install (as root)
+
+OR
+
+* gem install ruby-libnotify
 
 == API Documentation
 

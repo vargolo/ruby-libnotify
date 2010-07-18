@@ -11,7 +11,12 @@ ruby-libnotify action example
 
 =end
 
-require 'RNotify'
+begin
+  require 'RNotify'
+rescue LoadError
+  require 'rubygems'
+  require 'RNotify'
+end
 
 Gtk.init
 Notify.init("Test3")

@@ -11,7 +11,12 @@ ruby-libnotify basic example
 
 =end
 
-require 'RNotify'
+begin
+  require 'RNotify'
+rescue LoadError
+  require 'rubygems'
+  require 'RNotify'
+end
 
 Notify.init("Test1")
 test = Notify::Notification.new("Test 1", "This is a test", nil, nil)
