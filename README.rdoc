@@ -18,6 +18,8 @@ OR
 
 * gem install ruby-libnotify
 
+see gem homepage: http://rubygems.org/gems/ruby-libnotify
+
 == API Documentation
 
 Visit the page http://ruby-libnotify.rubyforge.org
