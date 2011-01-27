@@ -7,6 +7,7 @@ ruby-libnotify is a ruby binding for libnotify (http://www.galago-project.org)
 * Ruby >= 1.8.6 (not tested with previous versions)
 * libnotify >= 0.4.1 (not tested with previous versions)
 * ruby-gtk2 and its dependencies
+* pkg-config >= 1.0.7 (http://rubygems.org/gems/pkg-config)
 
 == Install
 
@@ -44,5 +45,5 @@ ruby-libnotify is released under the terms of the LGPL license
 
 == Authors
 
-(c) Luca Russo 2006 - 2010
+(c) Luca Russo 2006 - 2011
 

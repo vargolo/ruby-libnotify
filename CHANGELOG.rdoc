@@ -1,5 +1,8 @@
 = Changelog
 
+== Release 0.4.1.1
+   * ADDED: 'pkg-config>=1.0.7' as gem dependency
+
 == Release 0.4.1
    * CHANGED: package's structure, now more standard
    * ADDED: require 'rubygems' in examples

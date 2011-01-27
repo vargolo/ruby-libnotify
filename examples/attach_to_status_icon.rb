@@ -5,7 +5,7 @@
 attach_to_status_icon.rb
 
 Luca Russo <vargolo@gmail.com>
-Copyright (LGPL) 2006 - 2010
+Copyright (LGPL) 2006 - 2011
 
 ruby-libnotify attach_to_status_icon example
 

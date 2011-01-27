@@ -5,7 +5,7 @@
 urgency.rb
 
 Luca Russo <vargolo@gmail.com>
-Copyright (LGPL) 2006 - 2010
+Copyright (LGPL) 2006 - 2011
 
 ruby-libnotify urgency example
 

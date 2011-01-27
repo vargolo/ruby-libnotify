@@ -5,11 +5,13 @@ type=0, DEBUG
 type=1, RELEASE
 =end
 
+require 'rubygems'
+
 begin
   require 'pkg-config'
 rescue LoadError
-  puts "ERROR: no pkg-config.rb file found, please install Ruby/GLib2",
-         "[ http://ruby-gnome2.sourceforge.jp/ ]"
+  puts "ERROR: no pkg-config.rb file found, please install pkg-config",
+         "[ http://rubygems.org/gems/pkg-config ]"
   exit
 end
 
