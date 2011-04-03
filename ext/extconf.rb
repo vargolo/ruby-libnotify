@@ -32,18 +32,27 @@ def check_set_app_name_libnotify
   end
 end
 
-if find_gtk2_rb == true
-  if have_library("notify", "notify_init") == true
-    $CFLAGS << ' -DDEBUG' if type == 0
-    $CFLAGS << ' -Wall' << " -I#{Config::CONFIG["sitearchdir"]} " << PKGConfig.cflags("libnotify")
-    $LIBS << ' ' << PKGConfig.libs("libnotify")
-    check_set_app_name_libnotify
-    create_makefile("rnotify")
+def check_required_version(app, maj, min, mic)
+  PKGConfig.check_version?(app, maj, min, mic)
+end
+
+if check_required_version("libnotify", 0, 7, 0) == true
+  if find_gtk2_rb == true
+    if have_library("notify", "notify_init") == true
+      $CFLAGS << ' -DDEBUG' if type == 0
+      $CFLAGS << ' -Wall' << " -I#{Config::CONFIG["sitearchdir"]} " << PKGConfig.cflags("libnotify")
+      $LIBS << ' ' << PKGConfig.libs("libnotify")
+      check_set_app_name_libnotify
+      create_makefile("rnotify")
+    else
+      puts "ERROR: please install libnotify",
+	    "[ http://www.galago-project.org/ ]"
+    end
   else
-    puts "ERROR: please install libnotify",
-           "[ http://www.galago-project.org/ ]"
+    puts "ERROR: no gtk2.rb found, please install Ruby/Gtk2",
+         "[ http://ruby-gnome2.sourceforge.jp/ ]"
   end
 else
-  puts "ERROR: no gtk2.rb found, please install Ruby/Gtk2",
-         "[ http://ruby-gnome2.sourceforge.jp/ ]"
+  puts "libnotify >= 0.7.0 is required in order to use this release."
+  puts "if you have libnotify <= 0.6.0 please install ruby-libnotify < 0.5.0"
 end
