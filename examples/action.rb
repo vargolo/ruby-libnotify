@@ -21,7 +21,7 @@ end
 Gtk.init
 Notify.init("Test3")
 
-test = Notify::Notification.new("Test 3", "action test", nil, nil)
+test = Notify::Notification.new("Test 3", "action test", nil)
 test.timeout= Notify::Notification::EXPIRES_NEVER
 test.signal_connect("closed") { Gtk.main_quit }
 

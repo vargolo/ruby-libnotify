@@ -111,7 +111,7 @@ _wrap_notify_is_initted(VALUE self)
 
 /*
  * call-seq:
- *      app_name
+ *      name
  *
  * Returns the application name passed to Notify.init
  */
@@ -122,6 +122,28 @@ _wrap_notify_get_app_name(VALUE self)
 
   return rb_str_new2(name);
 }
+
+#ifdef HAVE_SET_APP_NAME
+/*
+ * call-seq:
+ *      name= new_name
+ *
+ *  if new_name is a valid string, change the application name to new_name
+ *  otherwise nothing will be changed
+ * 
+ *  ** ONLY WHEN COMPILED AGAINST LIBNOTIFY >= 0.7.2 **
+ */
+static VALUE
+_wrap_notify_set_app_name(VALUE self, VALUE app_name)
+{
+  char *name = NIL_P(app_name) ? NULL : StringValuePtr(app_name);
+
+  if(name != NULL || *name != '\0')
+    notify_set_app_name(name);
+
+  return Qnil;
+}
+#endif
 
 /*
  * call-seq:
@@ -197,7 +219,7 @@ _wrap_notify_get_server_info(VALUE self)
 
 /*
  * call-seq:
- *      new(summ, msg, icon, widget)
+ *      new(summ, msg, icon)
  *
  * summ = The summary text (required)
  *
@@ -205,38 +227,20 @@ _wrap_notify_get_server_info(VALUE self)
  *
  * icon = The icon or nil
  *
- * widget = The widget (or a Gtk::StatusIcon, when compiled against GTK+ >= 2.9.2 and libnotify >= 0.4.1) to attach to or nil
- *
  * Creates and returns a new notification, throw an exception on error
  */
 static VALUE
-_wrap_notification_init(VALUE self, VALUE summ, VALUE msg,
-                        VALUE icon, VALUE widget)
+_wrap_notification_init(VALUE self, VALUE summ, VALUE msg, VALUE icon)
 {
-  GObject *obj = G_OBJECT(RVAL2GOBJ(widget));
   char *nsumm = NIL_P(summ) ? NULL : StringValuePtr(summ);
   NotifyNotification *n = NULL;
 
   if(nsumm == NULL || *nsumm == '\0')
-    rb_raise( rb_eArgError, "REQUIRED: the `summ` field" );
+    rb_raise(rb_eArgError, "You need to supply a valid summary string");
 
-#ifdef HAVE_STATUS_ICON
-  if(GTK_IS_STATUS_ICON(obj))
-    n = notify_notification_new_with_status_icon(nsumm,
-                                                 NIL_P(msg) ? NULL : StringValuePtr(msg),
-                                                 NIL_P(icon) ? NULL : StringValuePtr(icon),
-                                                 GTK_STATUS_ICON(obj));
-  else
-    n = notify_notification_new(nsumm,
-                                NIL_P(msg) ? NULL : StringValuePtr(msg),
-                                NIL_P(icon) ? NULL : StringValuePtr(icon),
-                                GTK_WIDGET(obj));
-#else
   n = notify_notification_new(nsumm,
                               NIL_P(msg) ? NULL : StringValuePtr(msg),
-                              NIL_P(icon) ? NULL : StringValuePtr(icon),
-                              GTK_WIDGET(obj));
-#endif
+                              NIL_P(icon) ? NULL : StringValuePtr(icon));
 
   if(n == NULL)
     rb_raise(rb_eRuntimeError, "Can not create a new notification");
@@ -281,45 +285,12 @@ _wrap_notification_update(VALUE self, VALUE summ, VALUE msg, VALUE icon)
 #endif
 
   if(nsumm == NULL || *nsumm == '\0')
-    rb_raise(rb_eArgError, "REQUIRED: the `summ` field");
+    rb_raise(rb_eArgError, "You need to supply a valid summary string");
 
   if(notify_notification_update(n, nsumm, nmsg, nicon) == TRUE)
     return Qtrue;
 
   return Qfalse;
-}
-
-/*
- * call-seq:
- *      attach_to(widget)
- *
- * widget = The widget (or a Gtk::StatusIcon, when compiled against GTK+ >= 2.9.2 and libnotify >= 0.4.1) to attach to
- *
- * Attaches the notification to a Gtk::Widget or Gtk::StatusIcon
- */
-static VALUE
-_wrap_notification_attach_to(VALUE self, VALUE widget)
-{
-  GObject *obj = G_OBJECT(RVAL2GOBJ(widget));
-  NotifyNotification *n = NOTIFY_NOTIFICATION(RVAL2GOBJ(self));
-
-#ifdef DEBUG
-  if(NOTIFY_IS_NOTIFICATION(n))
-    rb_warn("attach_to, ok");
-  else
-    rb_warn("attach_to, no ok");
-#endif
-
-#ifdef HAVE_STATUS_ICON
-  if(GTK_IS_STATUS_ICON(obj))
-    notify_notification_attach_to_status_icon(n, GTK_STATUS_ICON(obj));
-  else
-    notify_notification_attach_to_widget(n, GTK_WIDGET(obj));
-#else
-  notify_notification_attach_to_widget(n, GTK_WIDGET(obj));
-#endif
-
-  return Qnil;
 }
 
 /*
@@ -455,21 +426,21 @@ _wrap_notification_set_pixbuf_icon(VALUE self, VALUE icon)
     rb_warn("pixbuf_icon, no ok");
 #endif
 
-  notify_notification_set_icon_from_pixbuf(n, pix);
+  notify_notification_set_image_from_pixbuf(n, pix);
 
   return Qnil;
 }
 
 /*
- * call-seq:
- *      hint32(key, value)
- *
- * key = The hint
- *
- * value = The hint's value
- *
- * Sets a hint with a 32-bit integer value
- */
+* call-seq:
+* hint32(key, value)
+*
+* key = The hint
+*
+* value = The hint's value
+*
+* Sets a hint with a 32-bit integer value
+*/
 static VALUE
 _wrap_notification_set_hint32(VALUE self, VALUE key, VALUE value)
 {
@@ -489,15 +460,15 @@ _wrap_notification_set_hint32(VALUE self, VALUE key, VALUE value)
 }
 
 /*
- * call-seq:
- *      hint_double(key, value)
- *
- * key = The hint
- *
- * value = The hint's value
- *
- * Sets a hint with a double value
- */
+* call-seq:
+* hint_double(key, value)
+*
+* key = The hint
+*
+* value = The hint's value
+*
+* Sets a hint with a double value
+*/
 static VALUE
 _wrap_notification_set_hint_double(VALUE self, VALUE key, VALUE value)
 {
@@ -517,15 +488,15 @@ _wrap_notification_set_hint_double(VALUE self, VALUE key, VALUE value)
 }
 
 /*
- * call-seq:
- *      hint_string(key, value)
- *
- * key = The hint
- *
- * value = The hint's value
- *
- * Sets a hint with a string value
- */
+* call-seq:
+* hint_string(key, value)
+*
+* key = The hint
+*
+* value = The hint's value
+*
+* Sets a hint with a string value
+*/
 static VALUE
 _wrap_notification_set_hint_string(VALUE self, VALUE key, VALUE value)
 {
@@ -546,15 +517,15 @@ _wrap_notification_set_hint_string(VALUE self, VALUE key, VALUE value)
 }
 
 /*
- * call-seq:
- *      hint_byte(key, value)
- *
- * key = The hint
- *
- * value = The hint's value
- *
- * Sets a hint with a byte value
- */
+* call-seq:
+* hint_byte(key, value)
+*
+* key = The hint
+*
+* value = The hint's value
+*
+* Sets a hint with a byte value
+*/
 static VALUE
 _wrap_notification_set_hint_byte(VALUE self, VALUE key, VALUE value)
 {
@@ -595,43 +566,6 @@ _wrap_notification_clear_hints(VALUE self)
 
   return Qnil;
 }
-
-#ifdef HAVE_GEOMETRY_HINTS
-/*
- * call-seq:
- *      geometry_hints(screen, x, y)
- *
- * ** WHEN COMPILED AGAINST LIBNOTIFY 0.4.1 OR HIGHER **
- *
- * screen = The Gdk::Screen the notification should appear on
- *
- * x = The X coordinate to point to
- *
- * y = The Y coordinate to point to
- *
- * Sets the geometry hints on the notification
- */
-static VALUE
-_wrap_notification_set_geometry_hints(VALUE self, VALUE screen, VALUE x, VALUE y)
-{
-  GdkScreen *sc = GDK_SCREEN(RVAL2GOBJ(screen));
-  NotifyNotification *n = NOTIFY_NOTIFICATION(RVAL2GOBJ(self));
-
-  if(sc == NULL)
-    rb_raise(rb_eArgError, "REQUIRED: the `screen` field");
-
-#ifdef DEBUG
-  if(NOTIFY_IS_NOTIFICATION(n) && GDK_IS_SCREEN(sc))
-    rb_warn("set_geometry_hints, ok");
-  else
-    rb_warn("set_geometry_hints, no ok");
-#endif
-
-  notify_notification_set_geometry_hints(n, sc, FIX2INT(x), FIX2INT(y));
-
-  return Qnil;
-}
-#endif
 
 /*
  * call-seq:
@@ -684,7 +618,7 @@ _wrap_notification_add_action(int argc, VALUE *argv, VALUE self)
   notify_notification_add_action(n,
                                  NIL_P(action) ? NULL : StringValuePtr(action),
                                  NIL_P(label) ? NULL : StringValuePtr(label),
-                                 (NotifyActionCallback) _notification_action_cb,
+                                 NOTIFY_ACTION_CALLBACK(_notification_action_cb),
                                  actionData, (GFreeFunc)_notification_action_free);
 
   return Qnil;
@@ -737,12 +671,9 @@ _wrap_notification_close(VALUE self)
   return Qfalse;
 }
 
-#ifdef HAVE_CLOSED_REASON
 /*
  * call-seq:
  *       closed_reason
- *
- * ** WHEN COMPILED AGAINST LIBNOTIFY 0.4.5 OR HIGHER **
  *
  * Returns the reason code why the notification was closed
  */
@@ -763,7 +694,6 @@ _wrap_notification_get_closed_reason(VALUE self)
 
   return INT2FIX(reason);
 }
-#endif
 
 /*
  * libnotify ruby interface
@@ -785,13 +715,15 @@ Init_rnotify()
   rb_define_module_function(mNotify, "init", _wrap_notify_init, 1);
   rb_define_module_function(mNotify, "uninit", _wrap_notify_uninit, 0);
   rb_define_module_function(mNotify, "init?", _wrap_notify_is_initted, 0);
-  rb_define_module_function(mNotify, "app_name", _wrap_notify_get_app_name, 0);
+  rb_define_module_function(mNotify, "name", _wrap_notify_get_app_name, 0);
+#ifdef HAVE_SET_APP_NAME
+  rb_define_module_function(mNotify, "name=", _wrap_notify_set_app_name, 1);
+#endif
   rb_define_module_function(mNotify, "server_caps", _wrap_notify_get_server_caps, 0);
   rb_define_module_function(mNotify, "server_info", _wrap_notify_get_server_info, 0);
 
-  rb_define_method(cNotification, "initialize", _wrap_notification_init, 4);
+  rb_define_method(cNotification, "initialize", _wrap_notification_init, 3);
   rb_define_method(cNotification, "update", _wrap_notification_update, 3);
-  rb_define_method(cNotification, "attach_to", _wrap_notification_attach_to, 1);
   rb_define_method(cNotification, "show", _wrap_notification_show, 0);
   rb_define_method(cNotification, "timeout=", _wrap_notification_set_timeout, 1);
   rb_define_method(cNotification, "category=", _wrap_notification_set_category, 1);
@@ -801,14 +733,9 @@ Init_rnotify()
   rb_define_method(cNotification, "hint_double", _wrap_notification_set_hint_double, 2);
   rb_define_method(cNotification, "hint_string", _wrap_notification_set_hint_string, 2);
   rb_define_method(cNotification, "hint_byte", _wrap_notification_set_hint_byte, 2);
-#ifdef HAVE_GEOMETRY_HINTS
-  rb_define_method(cNotification, "geometry_hints", _wrap_notification_set_geometry_hints, 3);
-#endif
   rb_define_method(cNotification, "add_action", _wrap_notification_add_action, -1);
   rb_define_method(cNotification, "clear_actions", _wrap_notification_clear_actions, 0);
   rb_define_method(cNotification, "clear_hints", _wrap_notification_clear_hints, 0);
-#ifdef HAVE_CLOSED_REASON
   rb_define_method(cNotification, "closed_reason", _wrap_notification_get_closed_reason, 0);
-#endif
   rb_define_method(cNotification, "close", _wrap_notification_close, 0);
 }

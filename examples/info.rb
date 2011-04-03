@@ -20,7 +20,7 @@ end
 
 Notify.init("Test8")
 
-puts "APPLICATION NAME: #{Notify.app_name}\n"
+puts "APPLICATION NAME: #{Notify.name}\n"
 puts "SERVER CAPS:      #{Notify.server_caps}\n"
 puts "SERVER INFO:      #{Notify.server_info}\n"
 

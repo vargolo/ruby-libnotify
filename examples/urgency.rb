@@ -20,7 +20,7 @@ end
 
 Notify.init("Test5")
 
-test = Notify::Notification.new("Test 5", "urgency test - LOW", nil, nil)
+test = Notify::Notification.new("Test 5", "urgency test - LOW", nil)
 test.urgency= Notify::Notification::URGENCY_LOW
 test.timeout= 3000      #3 seconds
 test.show
@@ -28,7 +28,7 @@ test.show
 sleep(3)
 test.close
 
-test = Notify::Notification.new("Test 5", "urgency test - NORMAL", nil, nil)
+test = Notify::Notification.new("Test 5", "urgency test - NORMAL", nil)
 test.urgency= Notify::Notification::URGENCY_NORMAL
 test.timeout= 3000      #3 seconds
 test.show
@@ -36,12 +36,7 @@ test.show
 sleep(3)
 test.close
 
-test = Notify::Notification.new("Test 5", "urgency test - CRITICAL", nil, nil)
+test = Notify::Notification.new("Test 5", "urgency test - CRITICAL", nil)
 test.urgency= Notify::Notification::URGENCY_CRITICAL
 test.timeout= 3000      #3 seconds
 test.show
-
-sleep(3)
-test.close
-
-Notify.uninit

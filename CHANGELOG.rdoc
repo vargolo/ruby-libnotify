@@ -1,5 +1,17 @@
 = Changelog
 
+== Release 0.5.0
+   * libnotify >= 0.7.0 is required in order to use this release
+   * CHANGED: Notify.app_name has been renamed to Notify.name
+   * CHANGED: Notification.new no longer accept the widget to attach to as argument
+   * ADDED: Notify.name=, see doc
+   * REMOVED: Notification#attach_to
+   * REMOVED: Notification#geometry_hints
+
+   * All the Notification#hint* methods are deprecated 
+     As soon as ruby-gnome2 gets GVariant support they will be removed.
+     The hint* functions are deprecated in libnotify too.
+
 == Release 0.4.1.1
    * ADDED: 'pkg-config>=1.0.7' as gem dependency
 

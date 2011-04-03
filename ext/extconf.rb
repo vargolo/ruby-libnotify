@@ -23,30 +23,12 @@ def find_gtk2_rb
    File.exist?("#{Config::CONFIG["rubylibdir"]}/gtk2.rb"))
 end
 
-def check_status_icon_gtk2
-  if PKGConfig.check_version?("gtk+-2.0", 2, 9, 1) == true
-    $CFLAGS << ' -DHAVE_STATUS_ICON'
-    puts "with GtkStatusIcon.. yes"
+def check_set_app_name_libnotify
+  if PKGConfig.check_version?("libnotify", 0, 7, 2) == true
+    $CFLAGS << ' -DHAVE_SET_APP_NAME'
+    puts "with set application name.. yes"
   else
-    puts "with GtkStatusIcon.. no"
-  end
-end
-
-def check_geometry_hints_libnotify
-  if PKGConfig.check_version?("libnotify", 0, 4, 1) == true
-    $CFLAGS << ' -DHAVE_GEOMETRY_HINTS'
-    puts "with geometry hints.. yes"
-  else
-    puts "with geometry hints.. no"
-  end
-end
-
-def check_closed_reason_libnotify
-  if PKGConfig.check_version?("libnotify", 0, 4, 5) == true
-    $CFLAGS << ' -DHAVE_CLOSED_REASON'
-    puts "with closed reason.. yes"
-  else
-    puts "with closed reason.. no"
+    puts "with set application name.. no"
   end
 end
 
@@ -55,9 +37,7 @@ if find_gtk2_rb == true
     $CFLAGS << ' -DDEBUG' if type == 0
     $CFLAGS << ' -Wall' << " -I#{Config::CONFIG["sitearchdir"]} " << PKGConfig.cflags("libnotify")
     $LIBS << ' ' << PKGConfig.libs("libnotify")
-    check_status_icon_gtk2
-    check_geometry_hints_libnotify
-    check_closed_reason_libnotify
+    check_set_app_name_libnotify
     create_makefile("rnotify")
   else
     puts "ERROR: please install libnotify",

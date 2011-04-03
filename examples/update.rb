@@ -20,7 +20,7 @@ end
 
 Notify.init("Test2")
 
-test = Notify::Notification.new("Test 2", "This is a test", nil, nil)
+test = Notify::Notification.new("Test 2", "This is a test", nil)
 test.timeout= Notify::Notification::EXPIRES_NEVER
 test.show
 
@@ -29,8 +29,3 @@ sleep(3)
 test.update("Test 2", "Message replaced!", nil)
 test.timeout=5000       #5 seconds
 test.show
-
-sleep(6)
-
-test.close
-Notify.uninit

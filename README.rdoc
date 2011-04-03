@@ -5,7 +5,7 @@ ruby-libnotify is a ruby binding for libnotify (http://www.galago-project.org)
 == Requirements
 
 * Ruby >= 1.8.6 (not tested with previous versions)
-* libnotify >= 0.4.1 (not tested with previous versions)
+* libnotify >= 0.7.0
 * ruby-gtk2 and its dependencies
 * pkg-config >= 1.0.7 (http://rubygems.org/gems/pkg-config)
 
@@ -25,15 +25,13 @@ see gem homepage: http://rubygems.org/gems/ruby-libnotify
 
 Visit the page http://ruby-libnotify.rubyforge.org
 
+== Changelog
+
+See CHANGELOG.rdoc
+
 == Bug Report
 
 Use this page http://github.com/vargolo/ruby-libnotify/issues
-
-OR
-
-send me an email (see AUTHORS.rdoc)
-
-*IMPORTANT*: the subject of the email MUST contain 'ruby-libnotify' otherwise will be ignored
 
 == Thanks to
 
