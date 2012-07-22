@@ -8,19 +8,22 @@ type=1, RELEASE
 require 'rubygems'
 
 begin
-  require 'pkg-config'
+  require 'mkmf-gnome2'
 rescue LoadError
-  puts "ERROR: no pkg-config.rb file found, please install pkg-config",
-         "[ http://rubygems.org/gems/pkg-config ]"
-  exit
+  require 'rubygems'
+  gem 'glib2'
+  require 'mkmf-gnome2'
 end
 
 $preload = nil
 type = 1
 
-def find_gtk2_rb
-  (File.exist?("#{Config::CONFIG["sitelibdir"]}/gtk2.rb") ||
-   File.exist?("#{Config::CONFIG["rubylibdir"]}/gtk2.rb"))
+begin
+  require 'gtk2'
+rescue LoadError
+  puts "ERROR: no gtk2.rb found, please install Ruby/Gtk2",
+  "[ http://ruby-gnome2.sourceforge.jp/ ]"
+  exit
 end
 
 def check_status_icon_gtk2
@@ -50,20 +53,15 @@ def check_closed_reason_libnotify
   end
 end
 
-if find_gtk2_rb == true
-  if have_library("notify", "notify_init") == true
-    $CFLAGS << ' -DDEBUG' if type == 0
-    $CFLAGS << ' -Wall' << " -I#{Config::CONFIG["sitearchdir"]} " << PKGConfig.cflags("libnotify")
-    $LIBS << ' ' << PKGConfig.libs("libnotify")
-    check_status_icon_gtk2
-    check_geometry_hints_libnotify
-    check_closed_reason_libnotify
-    create_makefile("rnotify")
-  else
-    puts "ERROR: please install libnotify",
-           "[ http://www.galago-project.org/ ]"
-  end
+if have_library("notify", "notify_init") == true
+  $CFLAGS << ' -DDEBUG' if type == 0
+  $CFLAGS << ' -Wall' << " -I#{Config::CONFIG["sitearchdir"]} " << PKGConfig.cflags("libnotify")
+  $LIBS << ' ' << PKGConfig.libs("libnotify")
+  check_status_icon_gtk2
+  check_geometry_hints_libnotify
+  check_closed_reason_libnotify
+  create_makefile("rnotify")
 else
-  puts "ERROR: no gtk2.rb found, please install Ruby/Gtk2",
-         "[ http://ruby-gnome2.sourceforge.jp/ ]"
+  puts "ERROR: please install libnotify",
+  "[ http://www.galago-project.org/ ]"
 end
