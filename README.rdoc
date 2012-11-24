@@ -43,5 +43,5 @@ ruby-libnotify is released under the terms of the LGPL license
 
 == Authors
 
-(c) Luca Russo 2006 - 2011
+(c) Luca Russo 2006 - 2012
 

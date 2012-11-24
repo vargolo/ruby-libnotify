@@ -1,5 +1,9 @@
 = Changelog
 
+== Release 0.5.1
+   * ADDED: Notification#name=, see doc
+   * CHANGED: extconf.rb
+
 == Release 0.5.0
    * libnotify >= 0.7.0 is required in order to use this release
    * CHANGED: Notify.app_name has been renamed to Notify.name

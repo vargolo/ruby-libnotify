@@ -2,7 +2,7 @@
 //            rnotify.c
 //
 //  Luca Russo <vargolo@gmail.com>
-//  Copyright (LGPL) 2006 - 2011
+//  Copyright (LGPL) 2006 - 2012
 //
 
 #include <libnotify/notify.h>
@@ -36,7 +36,10 @@ static void
 _notification_action_free(ActionData *data)
 {
   if(data != NULL)
+  {
     g_free(data);
+    data = NULL;
+  }
 }
 
 static void
@@ -63,7 +66,7 @@ _wrap_alloc_free(VALUE self)
  * Returns TRUE if the library initialized properly, FALSE otherwise
  */
 static VALUE
-_wrap_notify_init(VALUE self, VALUE app_name)
+_wrap_notify_init(VALUE UNUSED(self), VALUE app_name)
 {
   gboolean init;
   char *name = NIL_P(app_name) ? NULL : StringValuePtr(app_name);
@@ -87,7 +90,7 @@ _wrap_notify_init(VALUE self, VALUE app_name)
  * Deinitialize libnotify, you must to call this before quit the program
  */
 static VALUE
-_wrap_notify_uninit(VALUE self)
+_wrap_notify_uninit(VALUE UNUSED(self))
 {
   notify_uninit();
 
@@ -101,7 +104,7 @@ _wrap_notify_uninit(VALUE self)
  * Returns TRUE if libnotify is inizialized, FALSE otherwise
  */
 static VALUE
-_wrap_notify_is_initted(VALUE self)
+_wrap_notify_is_initted(VALUE UNUSED(self))
 {
   if(notify_is_initted())
     return Qtrue;
@@ -116,7 +119,7 @@ _wrap_notify_is_initted(VALUE self)
  * Returns the application name passed to Notify.init
  */
 static VALUE
-_wrap_notify_get_app_name(VALUE self)
+_wrap_notify_get_app_name(VALUE UNUSED(self))
 {
   const gchar *name = notify_get_app_name();
 
@@ -134,7 +137,7 @@ _wrap_notify_get_app_name(VALUE self)
  *  ** ONLY WHEN COMPILED AGAINST LIBNOTIFY >= 0.7.2 **
  */
 static VALUE
-_wrap_notify_set_app_name(VALUE self, VALUE app_name)
+_wrap_notify_set_app_name(VALUE UNUSED(self), VALUE app_name)
 {
   char *name = NIL_P(app_name) ? NULL : StringValuePtr(app_name);
 
@@ -152,7 +155,7 @@ _wrap_notify_set_app_name(VALUE self, VALUE app_name)
  * Queries the server for its capabilities and returns them in an Array
  */
 static VALUE
-_wrap_notify_get_server_caps(VALUE self)
+_wrap_notify_get_server_caps(VALUE UNUSED(self))
 {
   GList *caps = NULL;
   VALUE rb_caps;
@@ -190,7 +193,7 @@ _wrap_notify_get_server_caps(VALUE self)
  *      p h[:spec_version]        #print the specification version supported
  */
 static VALUE
-_wrap_notify_get_server_info(VALUE self)
+_wrap_notify_get_server_info(VALUE UNUSED(self))
 {
   gchar *serv_name = NULL,
            *vendor = NULL,
@@ -253,6 +256,29 @@ _wrap_notification_init(VALUE self, VALUE summ, VALUE msg, VALUE icon)
 
   return self;
 }
+
+#ifdef HAVE_SET_APP_PNAME
+/*
+ * call-seq:
+ *      name= new_name
+ *
+ *  if new_name is a valid string, sets the application name for the notification.
+ *  otherwise nothing will be changed
+ * 
+ *  ** ONLY WHEN COMPILED AGAINST LIBNOTIFY >= 0.7.3 **
+ */
+static VALUE
+_wrap_notification_set_app_pname(VALUE self, VALUE notification_name)
+{
+  NotifyNotification *n = NOTIFY_NOTIFICATION(RVAL2GOBJ(self));
+  char *name = NIL_P(notification_name) ? NULL : StringValuePtr(notification_name);
+
+  if(name != NULL || *name != '\0')
+    notify_notification_set_app_name(n, name);
+
+  return Qnil;
+}
+#endif
 
 /*
  * call-seq:
@@ -697,11 +723,13 @@ _wrap_notification_get_closed_reason(VALUE self)
 
 /*
  * libnotify ruby interface
+ * [ http://ftp.gnome.org/pub/GNOME/sources/libnotify ]
  * [ http://www.galago-project.org ]
  */
 void
 Init_rnotify()
 {
+  g_type_init();
   VALUE mNotify = rb_define_module(MODULE_NAME);
   VALUE cNotification = G_DEF_CLASS2(NOTIFY_TYPE_NOTIFICATION, CLASS_NAME, mNotify,
                                      0, _wrap_alloc_free);
@@ -723,6 +751,9 @@ Init_rnotify()
   rb_define_module_function(mNotify, "server_info", _wrap_notify_get_server_info, 0);
 
   rb_define_method(cNotification, "initialize", _wrap_notification_init, 3);
+#ifdef HAVE_SET_APP_PNAME
+  rb_define_method(cNotification, "name=", _wrap_notification_set_app_pname, 1);
+#endif
   rb_define_method(cNotification, "update", _wrap_notification_update, 3);
   rb_define_method(cNotification, "show", _wrap_notification_show, 0);
   rb_define_method(cNotification, "timeout=", _wrap_notification_set_timeout, 1);

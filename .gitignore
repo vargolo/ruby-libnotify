@@ -1,5 +1,6 @@
 pkgs/
 doc/
+site/
 TODO
 *.so
 *.[ao]

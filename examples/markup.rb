@@ -5,7 +5,7 @@
 markup.rb
 
 Luca Russo <vargolo@gmail.com>
-Copyright (LGPL) 2006 - 2011
+Copyright (LGPL) 2006 - 2012
 
 ruby-libnotify markup example
 
